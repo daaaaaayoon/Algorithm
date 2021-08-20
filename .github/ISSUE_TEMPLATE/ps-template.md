@@ -8,7 +8,7 @@ assignees: daaaaaayoon
 ---
 
 <!-- 제목 -->
-### :blue_book: BOJ 5427 불
+### :blue_book: boj 5427 불
 
 <!-- 접근 및 해결 -->
 > :bookmark: __접근__
