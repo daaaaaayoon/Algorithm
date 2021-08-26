@@ -1,5 +1,7 @@
 package swea;
 
+import java.util.Scanner;
+
 public class Swea7733치즈도둑 {
 	
 	static int[][] cheese;
