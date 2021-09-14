@@ -8,8 +8,8 @@ import java.util.StringTokenizer;
 public class Boj_1182_부분수열의합 {
 
     static int N, S, ans;
-    static int[] number;
-    static boolean[] isSelected;
+    static int[] nums;
+    static boolean[] select;
 
     public static void main(String[] args) throws IOException {
 
@@ -17,40 +17,32 @@ public class Boj_1182_부분수열의합 {
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         S = Integer.parseInt(st.nextToken());
-        isSelected = new boolean[N];
-        number = new int[N];
-
+        nums = new int[N];
+        select = new boolean[N];
         st = new StringTokenizer(br.readLine());
-        for(int i=0; i<N; i++) {
-            number[i] = Integer.parseInt(st.nextToken());
+        for(int i=0; i<N; i++){
+            nums[i] = Integer.parseInt(st.nextToken());
         }
-
         subset(0);
-
         System.out.println(ans);
-
     }
 
     private static void subset(int cnt) {
-
-        if(cnt == N) {
-
-            boolean none = true;
+        if(cnt == N){
             int sum = 0;
-            for(int i=0; i<N; i++) {
-                if(isSelected[i]) {
-                    none = false;
-                    sum+=number[i];
+            boolean flag = false; // 공집합 제외하기 위함
+            for(int i=0; i<N; i++){
+                if(select[i]) {
+                    sum += nums[i];
+                    flag = true;
                 }
             }
-            if(!none && sum == S) ans++;
-
+            if(flag && sum == S) ans++;
             return;
         }
-
-        isSelected[cnt] = true;
+        select[cnt] = true;
         subset(cnt+1);
-        isSelected[cnt] = false;
+        select[cnt] = false;
         subset(cnt+1);
     }
 

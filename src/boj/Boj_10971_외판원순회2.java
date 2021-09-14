@@ -7,55 +7,47 @@ import java.util.StringTokenizer;
 
 public class Boj_10971_외판원순회2 {
 
-    static int N, depart, min;
-    static int[][] dist;
+    static int N, start, ans;
+    static int[][] w;
     static boolean[] visit;
-    static StringBuilder sb;
 
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        dist = new int[N][N];
+        w = new int[N][N];
         visit = new boolean[N];
-        min = Integer.MAX_VALUE;
-
+        ans = Integer.MAX_VALUE;
         StringTokenizer st;
-        for(int i=0; i<N; i++) {
+        for(int i=0; i<N; i++){
             st = new StringTokenizer(br.readLine());
-            for(int j=0; j<N; j++) {
-                dist[i][j] = Integer.parseInt(st.nextToken());
+            for(int j=0; j<N; j++){
+                w[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        // 1. 각각의 도시에서 dfs 시작하기
-        for(int i=0; i<N; i++) {
-            dfs(i, i, 0, 0);
+        for(int i=0; i<N; i++){
+            start = i; // 출발 좌표 기억
+            dfs(i, 0, 0);
         }
-
-        System.out.println(min);
-
+        System.out.println(ans);
     }
 
-    private static void dfs(int start, int v, int cnt, int sum) {
+    private static void dfs(int i, int cnt, int cost) {
 
-        // 3. 모든 지점을 방문한 이후, 시작점으로 돌아온 경우
-        if(cnt == N && start == v) {
-            min = Math.min(min, sum);
+        // 안해도 정답이지만, N개를 뽑기전에 시작점을 이미 방문한 경우는 제외할 수도 있음
+        if(cnt<N && visit[start]) return;
+
+        if(cnt == N && start == i){ // 모두 방문하고, 맨 마지막에 시작정점을 방문하는 경우에만
+            ans = Math.min(ans, cost+w[i][start]);
             return;
         }
 
-        // 2. 출발점 v에서 갈 수 있는 정점을 탐색
-        for(int i=0; i<N; i++) {
-            // 이미 방문한적 있는 경우 제외 && 비용의 값이 0인 경우(이동 불가) 제외
-            if(!visit[i] && dist[v][i]>0) {
-                // 방문 처리
-                visit[i] = true;
-                // 경로의 비용이 min보다 큰 경우는 제외 (가지치기)
-                if(sum+dist[v][i] < min) dfs(start, i, cnt+1, sum+dist[v][i]);
-                // 방문 처리 해제 (i를 선택하지 않았던 시점으로 돌아와서 다시 탐색해야하기 때문에)
-                visit[i] = false;
-            }
+        for(int j=0; j<N; j++){
+            if(i==j || visit[j] || w[i][j]<=0) continue; // 놓친 조건 : 비용이 0인 지점은 갈 수 없는 지점
+            visit[j] = true;
+            if(cost+w[i][j] < ans) dfs(j, cnt+1, cost+w[i][j]); // 가지치기
+            visit[j] = false;
         }
 
     }
