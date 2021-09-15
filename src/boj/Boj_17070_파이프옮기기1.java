@@ -1,59 +1,53 @@
 package boj;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Boj_17070_파이프옮기기1 {
-	
+
 	static int N, ans;
-	static int[][] house;
-	static int[] di = {0, 1, 1};
-	static int[] dj = {1, 0, 1};
-	
-	public static void main(String[] args) {
-		
-		Scanner sc = new Scanner(System.in);
-		N = sc.nextInt();
-		house = new int[N+1][N+1];
-		
-		for(int i=1; i<=N; i++) {
-			for(int j=1; j<=N; j++) {
-				house[i][j] = sc.nextInt();
+	static int[][] map;
+	static int[][] didj = {{0,1}, {1,0}, {1,1}}; // 가로, 세로, 대각선
+
+	public static void main(String[] args) throws IOException {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		map = new int[N+1][N+1];
+
+		StringTokenizer st;
+		for(int i=1; i<=N; i++){
+			st = new StringTokenizer(br.readLine());
+			for(int j=1; j<=N; j++){
+				map[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
-		
-		move(1, 2, 0);
+
+		dfs(1, 2, 0);
 		System.out.println(ans);
+
 	}
-	
-	static void move(int i, int j, int dir) {
-		
-		if(i==N && j==N) {
+
+	private static void dfs(int i, int j, int dir) {
+
+		if(i == N && j == N){
 			ans++;
 			return;
 		}
-		
-		for(int d=0; d<3; d++) {
-			
-			if(dir==0 && d==1) continue;
-			if(dir==1 && d==0) continue;
-			
-			int ni = i + di[d];
-			int nj = j + dj[d];
-			
-			if(ni>=1 && ni<=N && nj>=1 && nj<=N
-					&& house[ni][nj]!=1) {
-				
-				if(d==2) {
-					if(house[ni-1][nj]!=1 && house[ni][nj-1]!=1) {
-						move(ni, nj, d);
-					}
-				} else {
-					move(ni, nj, d);
-				}
-				
-			}
-				
+		for(int d=0; d<3; d++){
+
+			if((dir==0 && d==1) || (dir==1 && d==0)) continue; // 가로일때 세로방향 불가, 세로일때 가로방향 불가
+
+			int ni = i + didj[d][0];
+			int nj = j + didj[d][1];
+			if(ni<1 || nj<1 || ni>=N+1 || nj>=N+1 || map[ni][nj]==1) continue;
+			if(d==2 && (map[ni-1][nj]==1 || map[ni][nj-1]==1)) continue; // 대각선 방향에서 빈공간인지 확인
+			dfs(ni, nj, d);
 		}
+
 	}
 	
 }
